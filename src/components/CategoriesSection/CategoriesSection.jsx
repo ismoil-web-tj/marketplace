@@ -61,7 +61,7 @@ export default function CategoriesSection() {
       id: 6,
       name: 'Все категории',
       count: 'Смотреть все',
-      path: '/categories',
+      path: '/catalog',
       icon: LayoutGrid,
       bgColor: 'bg-slate-100/50',
       iconColor: 'text-slate-600',
@@ -78,7 +78,7 @@ export default function CategoriesSection() {
             Shop by Category
           </h2>
           <Link
-            to="/categories"
+            to="/catalog"
             className="group inline-flex items-center gap-1 text-sm font-bold text-[#2563EB] hover:text-blue-700 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 rounded"
             aria-label="Смотреть все категории товаров"
           >
