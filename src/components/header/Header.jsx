@@ -554,14 +554,7 @@ export default function Header() {
                 className="relative w-full"
                 role="search"
               >
-                <input
-                  type="search"
-                  placeholder="Search for products..."
-                  className="w-full h-11 pl-4 pr-11 bg-slate-50 border border-slate-100 rounded-xl text-sm text-gray-900 placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-600/10 transition-all duration-150"
-                />
-                <button type="submit" className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-600 transition-colors" aria-label="Искать">
-                  <Search className="w-4.5 h-4.5" />
-                </button>
+                
               </form>
             </div>
 
