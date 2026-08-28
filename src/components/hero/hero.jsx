@@ -49,11 +49,11 @@ export default function Hero() {
                 </Link>
                 
                 <Link
-                  to="/catalog"
+                  to="/aboutus"
                   className="inline-flex items-center justify-center px-7 py-4 bg-white hover:bg-slate-50 active:bg-slate-100 text-[#0F172A] font-semibold text-sm rounded-xl border border-slate-200 transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 cursor-pointer text-center"
                   aria-label="Explore daily deals"
                 >
-                  Просмотр товаров
+                  О нас
                 </Link>
               </div>
 
