@@ -7,6 +7,7 @@ import Hero from './components/hero/hero';
 import CategoriesSection from './components/CategoriesSection/CategoriesSection';
 import Catalog from './routes/catalog';
 import Favorites from './routes/favorites'; // <-- 1. ИМПОРТИРУЕМ ИЗБРАННОЕ
+import AboutUs from './components/aboutus/aboutus';
 
 // Компонент главной страницы (собирает Hero + Categories)
 function HomePage() {
@@ -28,6 +29,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/catalog" element={<Catalog />} />
           <Route path="/favorites" element={<Favorites />} /> {/* <-- 2. ДОБАВЛЯЕМ РОУТ */}
+          <Route path="/aboutus" element={<AboutUs/>} /> {/* <-- 2. ДОБАВЛЯЕМ РОУТ */}
         </Routes>
       </main>
 
