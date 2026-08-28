@@ -24,11 +24,9 @@ export default function Footer() {
 
                         <div className="text-left max-w-xl">
                             <h3 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight mb-2">
-                                Stay Updated on Special Offers
+                                Следите за нами за самыми лучшими ценами
                             </h3>
-                            <p className="text-sm text-blue-100 opacity-90 leading-relaxed">
-                                Subscribe to our newsletter for exclusive discounts, new arrivals, and weekly product updates directly to your inbox.
-                            </p>
+                            
                         </div>
 
                         <form onSubmit={handleSubmit} className="w-full lg:max-w-md">

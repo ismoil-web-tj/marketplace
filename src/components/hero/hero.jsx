@@ -97,21 +97,13 @@ export default function Hero() {
                 <Truck className="w-5.5 h-5.5 stroke-[1.8]" />
               </div>
               <div>
-                <h4 className="text-sm font-bold text-[#0F172A] tracking-tight">Free Shipping</h4>
-                <p className="text-xs text-slate-500 mt-0.5">On orders over $99</p>
+                <h4 className="text-sm font-bold text-[#0F172A] tracking-tight">Быстрая доставка</h4>
+                <p className="text-xs text-slate-500 mt-0.5">Доставка бесплатная начиная с 99 смн</p>
               </div>
             </div>
 
             {/* Feature 2 */}
-            <div className="flex items-center gap-4 lg:justify-center pt-5 sm:pt-0 sm:pl-4 lg:pl-0">
-              <div className="flex items-center justify-center w-12 h-12 rounded-full bg-emerald-50/80 text-emerald-600 shrink-0">
-                <RotateCcw className="w-5.5 h-5.5 stroke-[1.8]" />
-              </div>
-              <div>
-                <h4 className="text-sm font-bold text-[#0F172A] tracking-tight">Easy Returns</h4>
-                <p className="text-xs text-slate-500 mt-0.5">30-day return policy</p>
-              </div>
-            </div>
+            
 
             {/* Feature 3 */}
             <div className="flex items-center gap-4 lg:justify-center pt-5 sm:pt-0 lg:pl-0">
@@ -119,8 +111,8 @@ export default function Hero() {
                 <ShieldCheck className="w-5.5 h-5.5 stroke-[1.8]" />
               </div>
               <div>
-                <h4 className="text-sm font-bold text-[#0F172A] tracking-tight">Secure Checkout</h4>
-                <p className="text-xs text-slate-500 mt-0.5">100% secure payment</p>
+                <h4 className="text-sm font-bold text-[#0F172A] tracking-tight">Хорошее качество</h4>
+                <p className="text-xs text-slate-500 mt-0.5">100% увереность в качестве</p>
               </div>
             </div>
 
@@ -130,8 +122,8 @@ export default function Hero() {
                 <Headset className="w-5.5 h-5.5 stroke-[1.8]" />
               </div>
               <div>
-                <h4 className="text-sm font-bold text-[#0F172A] tracking-tight">24/7 Support</h4>
-                <p className="text-xs text-slate-500 mt-0.5">We're here to help</p>
+                <h4 className="text-sm font-bold text-[#0F172A] tracking-tight">24/7 подержка</h4>
+                <p className="text-xs text-slate-500 mt-0.5">Мы здесь чтобы помочь вам</p>
               </div>
             </div>
 

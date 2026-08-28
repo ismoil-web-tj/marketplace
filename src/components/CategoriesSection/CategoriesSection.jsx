@@ -15,7 +15,6 @@ export default function CategoriesSection() {
     {
       id: 1,
       name: 'Электроника',
-      count: '120+ товаров',
       path: '/catalog?category=electronics',
       icon: Smartphone,
       bgColor: 'bg-blue-50/50',
@@ -24,7 +23,6 @@ export default function CategoriesSection() {
     {
       id: 2,
       name: 'Одежда',
-      count: '250+ товаров',
       path: '/catalog?category=clothing',
       icon: Shirt,
       bgColor: 'bg-amber-50/50',
@@ -33,7 +31,6 @@ export default function CategoriesSection() {
     {
       id: 3,
       name: 'Дом и уют',
-      count: '180+ товаров',
       path: '/catalog?category=home',
       icon: Home,
       bgColor: 'bg-emerald-50/50',
@@ -42,7 +39,6 @@ export default function CategoriesSection() {
     {
       id: 4,
       name: 'Еда и продукты',
-      count: '95+ товаров',
       path: '/catalog?category=food',
       icon: Apple,
       bgColor: 'bg-rose-50/50',
@@ -51,7 +47,6 @@ export default function CategoriesSection() {
     {
       id: 5,
       name: 'Аксессуары',
-      count: '320+ товаров',
       path: '/catalog?category=accessories',
       icon: Headphones,
       bgColor: 'bg-indigo-50/50',
@@ -75,14 +70,13 @@ export default function CategoriesSection() {
         {/* SECTION HEADER */}
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-[#0F172A] font-extrabold text-xl sm:text-2xl tracking-tight">
-            Shop by Category
-          </h2>
+категории          </h2>
           <Link
             to="/catalog"
             className="group inline-flex items-center gap-1 text-sm font-bold text-[#2563EB] hover:text-blue-700 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 rounded"
             aria-label="Смотреть все категории товаров"
           >
-            View All Categories
+            Просмотр всех категорий
             <ArrowRight className="w-4 h-4 transition-transform duration-150 group-hover:translate-x-1" />
           </Link>
         </div>

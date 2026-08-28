@@ -48,7 +48,7 @@ export default function AboutUs() {
     },
     {
       id: 4,
-      title: 'Выгодные цены в TJS',
+      title: 'Выгодные цены',
       description: 'Прямые контракты с производителями позволяют нам предлагать честные цены в сомони без скрытых переплат.',
       icon: Award,
       color: 'text-amber-600',
