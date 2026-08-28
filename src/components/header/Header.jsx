@@ -442,16 +442,7 @@ export default function Header() {
               className="flex-1 max-w-[200px] xl:max-w-[260px] relative mx-2"
               role="search"
             >
-              <div className="relative group">
-                <input
-                  type="search"
-                  placeholder="Search for products..."
-                  className="w-full h-10 pl-4 pr-10 bg-slate-50 border border-transparent hover:border-slate-200 rounded-lg text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-slate-300 focus:ring-4 focus:ring-blue-600/5 transition-all duration-150"
-                />
-                <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-blue-600 transition-colors cursor-pointer" aria-label="Выполнить поиск">
-                  <Search className="w-4.5 h-4.5" />
-                </button>
-              </div>
+              
             </form>
 
             {/* Action Buttons */}
