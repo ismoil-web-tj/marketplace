@@ -931,8 +931,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   Heart, Search, Phone, Send, MessageCircle, X, Lock, Plus, Loader2, ImageIcon,
-  LogOut, UserPlus, Users, User, Trash2,
+  LogOut, UserPlus, Users, User, Trash2, Ban, CheckCircle2, KeyRound, CalendarPlus,
+  ChevronDown, ChevronUp,
 } from 'lucide-react';
+import bcrypt from 'bcryptjs';
 import { supabase } from '../supabase';
 
 
@@ -1005,6 +1007,10 @@ export default function Catalog() {
   const [usersList, setUsersList] = useState([]);
   const [usersLoading, setUsersLoading] = useState(false);
   const [usersError, setUsersError] = useState('');
+  // Какая строка продавца сейчас раскрыта (показывает его товары)
+  const [expandedSellerId, setExpandedSellerId] = useState(null);
+  // id продавца, для которого сейчас идёт действие (блок/продление/пароль/удаление)
+  const [sellerRowActionLoadingId, setSellerRowActionLoadingId] = useState(null);
 
   // --- Вход ПРОДАВЦА: иконка рядом с поиском -> список продавцов ->
   //     выбор продавца -> пароль именно для него -> кабинет ---
@@ -1380,6 +1386,117 @@ export default function Catalog() {
   const handleOpenUsersListModal = () => {
     setShowUsersListModal(true);
     fetchUsersList();
+  };
+
+  // ==========================================================
+  // Действия ГЛАВНОГО АДМИНА над конкретным продавцом:
+  // блокировка/разблокировка, продление доступа ("подписка"),
+  // смена пароля, удаление, просмотр и удаление его товаров.
+  // ==========================================================
+  const handleToggleSellerBlock = async (seller) => {
+    const newStatus = seller.status === 'blocked' ? 'active' : 'blocked';
+    setSellerRowActionLoadingId(seller.id);
+    try {
+      const { error } = await supabase
+        .from('sellers')
+        .update({ status: newStatus })
+        .eq('id', seller.id);
+
+      if (error) throw error;
+
+      setUsersList((prev) => prev.map((u) => (u.id === seller.id ? { ...u, status: newStatus } : u)));
+    } catch (err) {
+      console.error('Ошибка изменения статуса продавца:', err.message);
+      alert('Не удалось изменить статус: ' + err.message);
+    } finally {
+      setSellerRowActionLoadingId(null);
+    }
+  };
+
+  const handleExtendSellerAccess = async (seller) => {
+    const daysStr = window.prompt('На сколько дней продлить доступ (как подписку)?', '30');
+    if (!daysStr) return;
+    const days = Number(daysStr);
+    if (!days || days <= 0) {
+      alert('Введите положительное число дней.');
+      return;
+    }
+
+    setSellerRowActionLoadingId(seller.id);
+    try {
+      const currentExpiry = seller.expires_at ? new Date(seller.expires_at) : new Date();
+      const base = currentExpiry > new Date() ? currentExpiry : new Date();
+      const newExpiresAt = new Date(base.getTime() + days * 24 * 60 * 60 * 1000).toISOString();
+
+      const { error } = await supabase
+        .from('sellers')
+        .update({ expires_at: newExpiresAt })
+        .eq('id', seller.id);
+
+      if (error) throw error;
+
+      setUsersList((prev) => prev.map((u) => (u.id === seller.id ? { ...u, expires_at: newExpiresAt } : u)));
+    } catch (err) {
+      console.error('Ошибка продления доступа:', err.message);
+      alert('Не удалось продлить доступ: ' + err.message);
+    } finally {
+      setSellerRowActionLoadingId(null);
+    }
+  };
+
+  const handleResetSellerPasswordAdmin = async (seller) => {
+    const newPassword = window.prompt(`Новый пароль для продавца "${seller.name}":`);
+    if (!newPassword || !newPassword.trim()) return;
+
+    setSellerRowActionLoadingId(seller.id);
+    try {
+      // Хешируем прямо в браузере (bcryptjs) — по сети уходит только хеш,
+      // сам пароль в открытом виде никуда не отправляется и не сохраняется.
+      const passwordHash = bcrypt.hashSync(newPassword.trim(), 10);
+
+      const { error } = await supabase
+        .from('sellers')
+        .update({ password_hash: passwordHash })
+        .eq('id', seller.id);
+
+      if (error) throw error;
+
+      alert('Пароль продавца обновлён.');
+    } catch (err) {
+      console.error('Ошибка смены пароля:', err.message);
+      alert('Не удалось изменить пароль: ' + err.message);
+    } finally {
+      setSellerRowActionLoadingId(null);
+    }
+  };
+
+  const handleDeleteSellerAdmin = async (seller) => {
+    if (!window.confirm(`Удалить продавца "${seller.name}"? Его товары останутся в каталоге.`)) return;
+
+    setSellerRowActionLoadingId(seller.id);
+    try {
+      const { error } = await supabase
+        .from('sellers')
+        .delete()
+        .eq('id', seller.id);
+
+      if (error) throw error;
+
+      setUsersList((prev) => prev.filter((u) => u.id !== seller.id));
+      if (expandedSellerId === seller.id) setExpandedSellerId(null);
+    } catch (err) {
+      console.error('Ошибка удаления продавца:', err.message);
+      // Частая причина: у продавца ещё есть товары, а внешний ключ не
+      // разрешает удаление (ON DELETE RESTRICT). См. инструкцию про
+      // ALTER TABLE ... ON DELETE SET NULL.
+      alert('Не удалось удалить продавца: ' + err.message);
+    } finally {
+      setSellerRowActionLoadingId(null);
+    }
+  };
+
+  const handleToggleExpandSellerProducts = (sellerId) => {
+    setExpandedSellerId((prev) => (prev === sellerId ? null : sellerId));
   };
 
   // ==========================================================
@@ -2225,27 +2342,122 @@ export default function Catalog() {
 
             {!usersLoading && !usersError && usersList.length > 0 && (
               <div className="flex flex-col gap-2.5">
-                {usersList.map((user) => (
-                  <div
-                    key={user.id}
-                    className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between gap-3"
-                  >
-                    <div className="min-w-0">
-                      <p className="text-sm font-semibold text-slate-900 truncate">{user.name || '—'}</p>
+                {usersList.map((seller) => {
+                  const isBlocked = seller.status === 'blocked';
+                  const isExpired = seller.expires_at && new Date(seller.expires_at) < new Date();
+                  const isBusy = sellerRowActionLoadingId === seller.id;
+                  const isExpanded = expandedSellerId === seller.id;
+                  const sellerProducts = products.filter((p) => p.seller_id === seller.id);
+
+                  return (
+                    <div
+                      key={seller.id}
+                      className="bg-slate-50 border border-slate-200 rounded-xl overflow-hidden"
+                    >
+                      <div className="p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className="text-sm font-semibold text-slate-900 truncate">{seller.name || '—'}</span>
+                            <span
+                              className={`text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full shrink-0 ${
+                                isBlocked
+                                  ? 'bg-red-100 text-red-600'
+                                  : isExpired
+                                  ? 'bg-amber-100 text-amber-600'
+                                  : 'bg-emerald-100 text-emerald-600'
+                              }`}
+                            >
+                              {isBlocked ? 'заблокирован' : isExpired ? 'истёк срок' : 'активен'}
+                            </span>
+                          </div>
+                          {seller.expires_at && (
+                            <p className="text-xs text-slate-500 mt-0.5">
+                              Доступ до: {new Date(seller.expires_at).toLocaleDateString('ru-RU')}
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <button
+                            onClick={() => handleToggleSellerBlock(seller)}
+                            disabled={isBusy}
+                            title={isBlocked ? 'Разблокировать' : 'Заблокировать'}
+                            className="p-2 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 disabled:opacity-50 cursor-pointer transition-colors"
+                          >
+                            {isBlocked ? <CheckCircle2 className="w-4 h-4 text-emerald-600" /> : <Ban className="w-4 h-4 text-red-500" />}
+                          </button>
+                          <button
+                            onClick={() => handleExtendSellerAccess(seller)}
+                            disabled={isBusy}
+                            title="Продлить доступ (подписка)"
+                            className="p-2 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-600 disabled:opacity-50 cursor-pointer transition-colors"
+                          >
+                            <CalendarPlus className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleResetSellerPasswordAdmin(seller)}
+                            disabled={isBusy}
+                            title="Изменить пароль"
+                            className="p-2 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-600 disabled:opacity-50 cursor-pointer transition-colors"
+                          >
+                            <KeyRound className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => handleToggleExpandSellerProducts(seller.id)}
+                            title="Товары продавца"
+                            className="flex items-center gap-1 p-2 rounded-lg bg-white border border-slate-200 hover:bg-slate-100 text-slate-600 cursor-pointer transition-colors text-xs font-semibold"
+                          >
+                            {sellerProducts.length}
+                            {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                          </button>
+                          <button
+                            onClick={() => handleDeleteSellerAdmin(seller)}
+                            disabled={isBusy}
+                            title="Удалить продавца"
+                            className="p-2 rounded-lg bg-white border border-slate-200 hover:bg-red-50 text-red-600 disabled:opacity-50 cursor-pointer transition-colors"
+                          >
+                            {isBusy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Раскрывающийся список товаров этого продавца — админ может удалить любой */}
+                      {isExpanded && (
+                        <div className="border-t border-slate-200 p-3 bg-white flex flex-col gap-2">
+                          {sellerProducts.length === 0 ? (
+                            <p className="text-xs text-slate-400 text-center py-4">У этого продавца пока нет товаров.</p>
+                          ) : (
+                            sellerProducts.map((product) => {
+                              const isDeleting = deletingId === product.id;
+                              return (
+                                <div
+                                  key={product.id}
+                                  className="p-2.5 bg-slate-50 border border-slate-200 rounded-lg flex items-center gap-3"
+                                >
+                                  <div className="w-10 h-10 bg-white rounded-md overflow-hidden shrink-0 flex items-center justify-center">
+                                    <img src={product.image_url} alt={product.title} className="w-full h-full object-cover" />
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-xs font-semibold text-slate-900 truncate">{product.title}</p>
+                                    <p className="text-[11px] text-slate-500">{product.price} TJS</p>
+                                  </div>
+                                  <button
+                                    onClick={() => handleDeleteProduct(product.id)}
+                                    disabled={isDeleting}
+                                    title="Удалить товар"
+                                    className="p-1.5 rounded-md bg-white border border-slate-200 hover:bg-red-50 text-red-600 disabled:opacity-50 cursor-pointer transition-colors shrink-0"
+                                  >
+                                    {isDeleting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
+                                  </button>
+                                </div>
+                              );
+                            })
+                          )}
+                        </div>
+                      )}
                     </div>
-                    {user.status && (
-                      <span
-                        className={`text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full shrink-0 ${
-                          user.status === 'blocked'
-                            ? 'bg-red-100 text-red-600'
-                            : 'bg-emerald-100 text-emerald-600'
-                        }`}
-                      >
-                        {user.status === 'blocked' ? 'заблокирован' : 'активен'}
-                      </span>
-                    )}
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>
