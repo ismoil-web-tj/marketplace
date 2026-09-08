@@ -34,8 +34,8 @@ export default function Hero() {
 
               {/* Description */}
               <p className="text-sm sm:text-base text-slate-500 leading-relaxed mb-8 max-w-md">
-                Premium accessories designed for work, travel and lifestyle. Experience the perfect blend of modern aesthetics, premium materials and daily utility.
-              </p>
+Премиальные товары для всех.
+Ощутите идеальное сочетание современного дизайна, качественных материалов и практичности на каждый день.              </p>
 
               {/* CTA Buttons */}
               <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto mb-10">
@@ -66,11 +66,7 @@ export default function Hero() {
             <div className="lg:col-span-7 flex items-center justify-center relative w-full lg:h-[460px] xl:h-[520px]">
               
               {/* Promo Sticker */}
-              <div className="absolute top-2 right-2 sm:top-6 sm:right-6 lg:-top-2 lg:right-2 xl:top-6 xl:right-6 z-20 flex flex-col items-center justify-center w-22 h-22 sm:w-24 sm:h-24 rounded-full bg-[#2563EB] text-white text-center shadow-lg shadow-blue-600/20 transform rotate-12 select-none pointer-events-none animate-[pulse_3s_infinite_ease-in-out]">
-                <span className="text-[10px] font-bold uppercase tracking-wider opacity-90 leading-tight">Up to</span>
-                <span className="text-xl sm:text-2xl font-black leading-none">50%</span>
-                <span className="text-[10px] font-bold uppercase tracking-wider opacity-90 leading-tight">Off</span>
-              </div>
+              
 
               {/* Main Premium Product Mockup Composition */}
               <div className="relative w-full max-w-[420px] sm:max-w-[480px] lg:max-w-[540px] xl:max-w-[580px] aspect-[1.15/1] rounded-2xl overflow-hidden transition-transform duration-300 hover:scale-[1.01]">
