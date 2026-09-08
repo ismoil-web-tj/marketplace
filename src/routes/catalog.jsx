@@ -3307,7 +3307,7 @@ export default function Catalog() {
           МОБИЛЬНАЯ КНОПКА КАБИНЕТА
       ====================================================== */}
 
-      <button
+      {/* <button
         onClick={
           handleUserIconClick
         }
@@ -3318,7 +3318,7 @@ export default function Catalog() {
         {sellerSession
           ? `Кабинет продавца (${sellerSession.name})`
           : 'Кабинет продавца'}
-      </button>
+      </button> */}
 
       {/* ======================================================
           КАТЕГОРИИ
