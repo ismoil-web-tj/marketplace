@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   ShoppingBag, 
@@ -11,10 +11,42 @@ import {
   Sparkles, 
   MapPin, 
   Phone, 
-  Mail 
+  Mail,
+  MessageCircle,
+  Send,
+  X,
 } from 'lucide-react';
 
 export default function AboutUs() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const PHONE_NUMBER = '992927619070';
+  const PHONE_DISPLAY = '+992 92 761 90 70';
+
+  const contactMethods = [
+    {
+      name: 'Telegram',
+      value: '@ваш_username', // замените на ваш юзернейм, если есть
+      href: `https://t.me/+${PHONE_NUMBER}`,
+      icon: Send,
+      color: 'bg-[#229ED9]',
+    },
+    {
+      name: 'WhatsApp',
+      value: PHONE_DISPLAY,
+      href: `https://wa.me/${PHONE_NUMBER}`,
+      icon: MessageCircle,
+      color: 'bg-[#25D366]',
+    },
+    {
+      name: 'Телефон',
+      value: PHONE_DISPLAY,
+      href: `tel:+${PHONE_NUMBER}`,
+      icon: Phone,
+      color: 'bg-[#2563EB]',
+    },
+  ];
+
   const stats = [
     { id: 1, value: '50,000+', label: 'Довольные клиенты', icon: Users },
     { id: 2, value: '100+', label: 'Товаров в каталоге', icon: ShoppingBag },
@@ -236,16 +268,70 @@ export default function AboutUs() {
               >
                 Перейти в каталог
               </Link>
-              <a 
-                href="tel:+992927619070" 
+              <button
+                type="button"
+                onClick={() => setIsModalOpen(true)}
                 className="inline-flex items-center justify-center px-6 py-3 border border-white/30 text-sm sm:text-base font-semibold rounded-xl text-white hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-blue-700 focus:ring-white transition-all duration-200"
               >
                 Связаться с разработчиком
-              </a>
+              </button>
             </div>
           </div>
         </div>
       </section>
+
+      {/* CONTACT MODAL */}
+      {isModalOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+          onClick={() => setIsModalOpen(false)}
+        >
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+
+          <div
+            className="relative w-full max-w-sm bg-white border border-slate-200 rounded-2xl shadow-2xl p-6 sm:p-7"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setIsModalOpen(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 transition-colors"
+              aria-label="Закрыть"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <h3 className="text-lg font-bold text-slate-900 mb-1">
+              Связаться с разработчиком
+            </h3>
+            <p className="text-sm text-slate-500 mb-6">
+              Выберите удобный способ связи
+            </p>
+
+            <div className="flex flex-col gap-3">
+              {contactMethods.map(({ name, value, href, icon: Icon, color }) => (
+                
+                  key={name}
+                  href={href}
+                  target={name === 'Телефон' ? undefined : '_blank'}
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 p-3.5 rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors"
+                >
+                  <span className={`flex items-center justify-center w-11 h-11 rounded-full ${color} text-white shrink-0`}>
+                    <Icon className="w-5 h-5" />
+                  </span>
+                  <span className="flex flex-col">
+                    <span className="text-sm font-semibold text-slate-900">{name}</span>
+                    <span className="text-xs text-slate-500">{value}</span>
+                  </span>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

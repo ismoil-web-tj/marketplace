@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
     ShoppingBag,
@@ -6,13 +6,43 @@ import {
     Phone,
     MapPin,
     Send,
-
+    MessageCircle,
+    X,
 } from 'lucide-react';
 
 export default function Footer() {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
     const handleSubmit = (e) => {
         e.preventDefault();
     };
+
+    const PHONE_NUMBER = '992927619070';
+    const PHONE_DISPLAY = '+992 92 761 90 70';
+
+    const contactMethods = [
+        {
+            name: 'Telegram',
+            value: '@ваш_username', // замените на ваш реальный юзернейм, если есть
+            href: `https://t.me/+${PHONE_NUMBER}`,
+            icon: Send,
+            color: 'bg-[#229ED9]',
+        },
+        {
+            name: 'WhatsApp',
+            value: PHONE_DISPLAY,
+            href: `https://wa.me/${PHONE_NUMBER}`,
+            icon: MessageCircle,
+            color: 'bg-[#25D366]',
+        },
+        {
+            name: 'Телефон',
+            value: PHONE_DISPLAY,
+            href: `tel:+${PHONE_NUMBER}`,
+            icon: Phone,
+            color: 'bg-[#2563EB]',
+        },
+    ];
 
     return (
         <footer className="w-full bg-[#0F172A] text-slate-300">
@@ -26,13 +56,10 @@ export default function Footer() {
                             <h3 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight mb-2">
                                 Следите за нами за самыми лучшими ценами
                             </h3>
-                            
                         </div>
 
                         <form onSubmit={handleSubmit} className="w-full lg:max-w-md">
                             <div className="flex flex-col sm:flex-row items-stretch gap-2.5">
-
-
                             </div>
                         </form>
 
@@ -67,12 +94,8 @@ export default function Footer() {
                             </li>
                             <li className="flex items-center gap-3 text-slate-400">
                                 <Phone className="w-5 h-5 text-slate-500 shrink-0" />
-                                <a href="tel:+18005550199" className="hover:text-white transition-colors">+992 92 7777777</a>
+                                <a href={`tel:+${PHONE_NUMBER}`} className="hover:text-white transition-colors">{PHONE_DISPLAY}</a>
                             </li>
-                            {/* <li className="flex items-center gap-3 text-slate-400">
-                <Mail className="w-5 h-5 text-slate-500 shrink-0" />
-                <a href="mailto:support@accesora.com" className="hover:text-white transition-colors">support@accesora.com</a>
-              </li> */}
                         </ul>
                     </div>
 
@@ -98,9 +121,6 @@ export default function Footer() {
                         </h4>
                         <ul className="space-y-3 text-sm text-slate-400">
                             <li><Link to="/catalog" className="hover:text-white transition-colors">Каталог</Link></li>
-                            {/* <li><Link to="/catalog" className="hover:text-white transition-colors">Deals & Offers</Link></li> */}
-                            {/* <li><Link to="/catalog" className="hover:text-white transition-colors">New Arrivals</Link></li> */}
-                            {/* <li><Link to="/catalog" className="hover:text-white transition-colors">Featured Brands</Link></li> */}
                             <li><Link to="/favorites" className="hover:text-white transition-colors">Избранные</Link></li>
                         </ul>
                     </div>
@@ -118,27 +138,6 @@ export default function Footer() {
                         </ul>
                     </div>
 
-                    {/* Column 5: Social Media */}
-                    {/* <div className="lg:col-span-2 flex flex-col items-start text-left">
-            <h4 className="text-sm font-bold text-white tracking-wider uppercase mb-5 select-none">
-              Follow Us
-            </h4>
-            <p className="text-xs text-slate-400 mb-4 leading-relaxed">
-              Stay tuned on our social feeds for real-time announcements.
-            </p>
-            <div className="flex items-center gap-2.5">
-              <a
-                href="https://facebook.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center w-9 h-9 rounded-lg bg-slate-800 text-slate-300 hover:text-white hover:bg-[#2563EB] transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600"
-                aria-label="Follow us on Facebook"
-              >
-              </a>
-             
-            </div>
-          </div> */}
-
                 </div>
             </div>
 
@@ -146,26 +145,77 @@ export default function Footer() {
             <div className="w-full border-t border-slate-800/80 bg-[#0B0F19]/50">
                 <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
 
-                    {/* Left: Copyright */}
                     <span className="text-xs text-slate-500 text-center md:text-left select-none">
                         © 2026 Market. Все права защищены.
                     </span>
 
-                    {/* Center: Legal Links */}
                     <div className="flex flex-wrap justify-center gap-x-6 gap-y-1 text-xs text-slate-500">
-                        <a
-                            href="tel:+992927619070"
+                        <button
+                            type="button"
+                            onClick={() => setIsModalOpen(true)}
                             className="flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors"
                         >
                             Связатся с разработчиком
-                        </a>
+                        </button>
                     </div>
-
-                    {/* Right: Payment Badges */}
-
 
                 </div>
             </div>
+
+            {/* CONTACT MODAL */}
+            {isModalOpen && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                    role="dialog"
+                    aria-modal="true"
+                    onClick={() => setIsModalOpen(false)}
+                >
+                    {/* Overlay */}
+                    <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+
+                    {/* Modal content */}
+                    <div
+                        className="relative w-full max-w-sm bg-[#111827] border border-slate-800 rounded-2xl shadow-2xl p-6 sm:p-7"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <button
+                            type="button"
+                            onClick={() => setIsModalOpen(false)}
+                            className="absolute top-4 right-4 text-slate-500 hover:text-white transition-colors"
+                            aria-label="Закрыть"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+
+                        <h3 className="text-lg font-bold text-white mb-1">
+                            Связаться с разработчиком
+                        </h3>
+                        <p className="text-sm text-slate-400 mb-6">
+                            Выберите удобный способ связи
+                        </p>
+
+                        <div className="flex flex-col gap-3">
+                            {contactMethods.map(({ name, value, href, icon: Icon, color }) => (
+                                
+                                    key={name}
+                                    href={href}
+                                    target={name === 'Телефон' ? undefined : '_blank'}
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-4 p-3.5 rounded-xl bg-slate-800/60 hover:bg-slate-800 transition-colors"
+                                >
+                                    <span className={`flex items-center justify-center w-11 h-11 rounded-full ${color} text-white shrink-0`}>
+                                        <Icon className="w-5 h-5" />
+                                    </span>
+                                    <span className="flex flex-col">
+                                        <span className="text-sm font-semibold text-white">{name}</span>
+                                        <span className="text-xs text-slate-400">{value}</span>
+                                    </span>
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
 
         </footer>
     );
